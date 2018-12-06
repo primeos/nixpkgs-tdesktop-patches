@@ -1,13 +1,14 @@
 diff --git a/Telegram/Resources/qrc/telegram_linux.qrc b/Telegram/Resources/qrc/telegram_linux.qrc
-index 0554fa179..3ea027406 100644
+index 164e8d4f2..12319be14 100644
 --- a/Telegram/Resources/qrc/telegram_linux.qrc
 +++ b/Telegram/Resources/qrc/telegram_linux.qrc
-@@ -1,5 +1,4 @@
+@@ -1,6 +1,5 @@
  <RCC>
    <qresource prefix="/qt">
 -    <file alias="etc/qt.conf">../etc/qt_linux.conf</file>
    </qresource>
- </RCC>
+   <qresource prefix="/fc">
+     <file alias="fc-custom.conf">../fc-custom.conf</file>
 diff --git a/Telegram/SourceFiles/core/launcher.cpp b/Telegram/SourceFiles/core/launcher.cpp
 index d4bdadc17..8a420c74b 100644
 --- a/Telegram/SourceFiles/core/launcher.cpp
@@ -40,10 +41,10 @@ index d4bdadc17..8a420c74b 100644
  
  	DEBUG_LOG(("Telegram finished, result: %1").arg(result));
 diff --git a/Telegram/SourceFiles/platform/linux/linux_libs.h b/Telegram/SourceFiles/platform/linux/linux_libs.h
-index 6f93d69cd..df185d5a2 100644
+index 4834fee11..2e60a6513 100644
 --- a/Telegram/SourceFiles/platform/linux/linux_libs.h
 +++ b/Telegram/SourceFiles/platform/linux/linux_libs.h
-@@ -17,7 +17,7 @@ extern "C" {
+@@ -21,7 +21,7 @@ extern "C" {
  } // extern "C"
  
  #ifndef TDESKTOP_DISABLE_UNITY_INTEGRATION
@@ -171,10 +172,10 @@ index e29f348c8..122ff0f5d 100644
 -Q_IMPORT_PLUGIN(QHimePlatformInputContextPlugin)
  #endif // Q_OS_WIN | Q_OS_MAC | Q_OS_LINUX
 diff --git a/Telegram/SourceFiles/ui/text/text.cpp b/Telegram/SourceFiles/ui/text/text.cpp
-index 944f58479..887c1982f 100644
+index bc4d3d57b..370e5fe85 100644
 --- a/Telegram/SourceFiles/ui/text/text.cpp
 +++ b/Telegram/SourceFiles/ui/text/text.cpp
-@@ -1750,11 +1750,11 @@ private:
+@@ -1760,11 +1760,11 @@ private:
  		if (item == -1)
  			return;
  
@@ -204,10 +205,10 @@ index 2959cec77..04ad00645 100644
  		CrashReports::ClearAnnotationRef("CrashString");
  	}
 diff --git a/Telegram/SourceFiles/ui/twidget.cpp b/Telegram/SourceFiles/ui/twidget.cpp
-index 71f318229..461f52278 100644
+index 0ccc63ed5..464921148 100644
 --- a/Telegram/SourceFiles/ui/twidget.cpp
 +++ b/Telegram/SourceFiles/ui/twidget.cpp
-@@ -233,9 +233,9 @@ void sendSynteticMouseEvent(QWidget *widget, QEvent::Type type, Qt::MouseButton
+@@ -245,9 +245,9 @@ void sendSynteticMouseEvent(QWidget *widget, QEvent::Type type, Qt::MouseButton
  			, button
  			, QGuiApplication::mouseButtons() | button
  			, QGuiApplication::keyboardModifiers()
@@ -242,7 +243,7 @@ index a0e1e0489..223113081 100644
          IMPLICIT_DEPENDS CXX "${_pch_header}"
          COMMENT "Precompiling header ${_name} for ${_target} (C++)")
 diff --git a/Telegram/gyp/Telegram.gyp b/Telegram/gyp/Telegram.gyp
-index 1cab5ae29..465e8276a 100644
+index ac7696e1d..07193cf19 100644
 --- a/Telegram/gyp/Telegram.gyp
 +++ b/Telegram/gyp/Telegram.gyp
 @@ -75,7 +75,6 @@
@@ -261,7 +262,7 @@ index 1cab5ae29..465e8276a 100644
        'AL_ALEXT_PROTOTYPES',
        'TGVOIP_USE_CXX11_LIB',
        'XXH_INLINE_ALL',
-@@ -94,16 +92,8 @@
+@@ -96,16 +94,8 @@
      'include_dirs': [
        '<(src_loc)',
        '<(SHARED_INTERMEDIATE_DIR)',
@@ -456,7 +457,7 @@ index 17219fa2c..6853b5c3e 100644
        ],
        'cflags_c': [
 diff --git a/Telegram/gyp/telegram_linux.gypi b/Telegram/gyp/telegram_linux.gypi
-index 80259c687..b5e3c18a2 100644
+index dc0f4b90d..3a5c7d80c 100644
 --- a/Telegram/gyp/telegram_linux.gypi
 +++ b/Telegram/gyp/telegram_linux.gypi
 @@ -23,10 +23,11 @@
@@ -516,24 +517,22 @@ index 80259c687..b5e3c18a2 100644
  #      '<!(pkg-config 2> /dev/null --libs <@(pkgconfig_libs))',
      ],
      'cflags_cc': [
-@@ -96,10 +89,8 @@
+@@ -96,9 +89,7 @@
          ],
        }], ['not_need_gtk!="True"', {
          'cflags_cc': [
--          '<!(pkg-config 2> /dev/null --cflags appindicator-0.1)',
 -          '<!(pkg-config 2> /dev/null --cflags gtk+-2.0)',
 -          '<!(pkg-config 2> /dev/null --cflags glib-2.0)',
 -          '<!(pkg-config 2> /dev/null --cflags dee-1.0)',
-+          '<!(pkg-config 2> /dev/null --cflags appindicator3-0.1)',
 +          '<!(pkg-config 2> /dev/null --cflags gtk+-3.0)',
          ],
-       }]
-     ],
+       }], ['<!(pkg-config ayatana-appindicator3-0.1; echo $?) == 0', {
+         'cflags_cc': [ '<!(pkg-config --cflags ayatana-appindicator3-0.1)' ],
 diff --git a/Telegram/gyp/telegram_sources.txt b/Telegram/gyp/telegram_sources.txt
-index f02296c8a..46bd016dd 100644
+index 03c8a1335..77884c330 100644
 --- a/Telegram/gyp/telegram_sources.txt
 +++ b/Telegram/gyp/telegram_sources.txt
-@@ -755,14 +755,7 @@
+@@ -775,14 +775,7 @@
  <(emoji_suggestions_loc)/emoji_suggestions.cpp
  <(emoji_suggestions_loc)/emoji_suggestions.h
  
